@@ -119,7 +119,7 @@ fi
 if command -v gcloud >/dev/null 2>&1; then
     echo ""
     echo_info "apikeyscan requires the 'apikeys.googleapis.com' API to be enabled on your GCP project."
-    read -p "Would you like to enable it now using gcloud for your active project? (y/N): " ENABLE_API
+    read -p "Would you like to enable it now using gcloud for your active project? (y/N): " ENABLE_API </dev/tty
     if [[ "$ENABLE_API" =~ ^[Yy]$ ]]; then
         ACTIVE_PROJECT=$(gcloud config get-value project 2>/dev/null)
         if [ -n "$ACTIVE_PROJECT" ]; then
