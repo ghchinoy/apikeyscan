@@ -78,7 +78,7 @@ In JSON mode, it provides a deterministic output suitable for parsing by automat
 				break
 			}
 			if err != nil {
-				return fmt.Errorf("error listing keys: %v\n(Note: make sure 'apikeys.googleapis.com' API is enabled)", err)
+				return formatAPIError(err, projectID)
 			}
 			keys = append(keys, key)
 		}

@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
@@ -84,4 +85,18 @@ func getProjectID() (string, error) {
 		return "", fmt.Errorf("could not determine project ID from credentials. Please specify explicitly with --project flag, GOOGLE_CLOUD_PROJECT env var, or in ~/.env")
 	}
 	return creds.ProjectID, nil
+}
+
+func formatAPIError(err error, projectID string) error {
+	if err == nil {
+		return nil
+	}
+	errStr := err.Error()
+	if strings.Contains(errStr, "API Keys API has not been used") || strings.Contains(errStr, "SERVICE_DISABLED") {
+		return fmt.Errorf("The API Keys API is disabled for project '%s'.\n\nTo enable it, run:\n  gcloud services enable apikeys.googleapis.com --project=%s\n\nOr visit: https://console.developers.google.com/apis/api/apikeys.googleapis.com/overview?project=%s", projectID, projectID, projectID)
+	}
+	if strings.Contains(errStr, "PermissionDenied") {
+		return fmt.Errorf("Permission denied accessing API Keys for project '%s'. Ensure you have the 'roles/serviceusage.apiKeysViewer' role.", projectID)
+	}
+	return err
 }

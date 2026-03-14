@@ -101,7 +101,7 @@ If the key is unrestricted, it will prominently warn the user.`,
 					break
 				}
 				if errList != nil {
-					return fmt.Errorf("failed to list keys during search: %v", errList)
+					return formatAPIError(errList, projectID)
 				}
 
 				if k.DisplayName == keyArg || k.Uid == keyArg {

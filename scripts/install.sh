@@ -114,3 +114,26 @@ else
     echo_err "Installation completed, but '${BINARY}' is not in your PATH."
     echo_err "Please add ${INSTALL_DIR} to your PATH or run the binary directly from there."
 fi
+
+# 8. Post-Install Helper (API Enablement)
+if command -v gcloud >/dev/null 2>&1; then
+    echo ""
+    echo_info "apikeyscan requires the 'apikeys.googleapis.com' API to be enabled on your GCP project."
+    read -p "Would you like to enable it now using gcloud for your active project? (y/N): " ENABLE_API
+    if [[ "$ENABLE_API" =~ ^[Yy]$ ]]; then
+        ACTIVE_PROJECT=$(gcloud config get-value project 2>/dev/null)
+        if [ -n "$ACTIVE_PROJECT" ]; then
+            echo_info "Enabling API Keys API for project: $ACTIVE_PROJECT..."
+            gcloud services enable apikeys.googleapis.com --project="$ACTIVE_PROJECT"
+            if [ $? -eq 0 ]; then
+                echo_success "API enabled successfully!"
+            else
+                echo_err "Failed to enable the API. You may not have sufficient permissions."
+                echo "You can enable it manually at: https://console.developers.google.com/apis/api/apikeys.googleapis.com/overview?project=$ACTIVE_PROJECT"
+            fi
+        else
+            echo_err "Could not determine your active gcloud project."
+        fi
+    fi
+fi
+
