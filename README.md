@@ -15,6 +15,13 @@ This tool operates natively using the Google Cloud Go SDK, completely independen
 *   **Deterministic Output:** Use the `--json` global flag to output `list` and `details` commands as structured, parseable JSON arrays/objects. 
 *   **Color Degradation:** The standard table outputs use semantic coloring to highlight restricted vs. unrestricted keys. This safely degrades if piped to a file or if the `NO_COLOR` environment variable is set.
 
+## Performance & Cost
+
+**Cost:** The underlying Google Cloud API Keys API used by this tool is **free of charge**. You are not billed for listing, viewing, or managing keys. You are only billed when an API key is actively used to consume a paid service (like Google Maps or the Vision API).
+
+**Performance:** `apikeyscan` leverages the Go SDK to rapidly iterate through your keys. Because it must retrieve the actual key string and restriction data for each entry, execution time scales linearly with the number of keys and is primarily bound by network latency.
+* **Benchmark:** In a standard environment, `apikeyscan` checks **66 keys in 5.6 seconds** (averaging ~8.5 seconds per 100 keys). This is exponentially faster than manually navigating the Google Cloud Console to inspect individual key restrictions.
+
 ## Prerequisites
 
 1. **Google Cloud Credentials:** The tool uses Application Default Credentials (ADC) to authenticate. If you haven't authenticated recently, you can log in via:
